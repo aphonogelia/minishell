@@ -112,6 +112,43 @@ make debug
 ./minishell
 ```
 
+## Valgrind (Suppress Readline Leaks)
+
+`readline` and `add_history` can report known leaks from the library itself. If you want to suppress these leaks, create a suppression file called *readline_suppress.supp*. Content:
+
+```bash
+{
+	readline_leak
+	Memcheck:Leak
+	...
+	fun:readline
+}
+
+{
+	add_history_leak
+	Memcheck:Leak
+	...
+	fun:add_history
+}
+```
+
+Run minishell with Valgrind and suppressions:
+
+```bash
+valgrind \
+  --leak-check=full \
+  --show-leak-kinds=all \
+  --track-origins=yes \
+  --suppressions=readline_suppress.supp \
+  ./minishell
+```
+
+If you run the command from another directory, pass the absolute path to the suppression file:
+
+```bash
+valgrind --suppressions=/home/htharrau/0Projects/3_rank/minishell/minishell/readline_suppress.supp ./minishell
+```
+
 ## Quick Usage Examples
 
 ```bash
